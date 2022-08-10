@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from article.models import ArticlePost
+import markdown
 
 
 def article_list(request):
@@ -11,5 +12,10 @@ def article_list(request):
 
 def article_detail(request, article_id):
     article = ArticlePost.objects.get(id=article_id)
+    article.body = markdown.markdown(article.body,
+                                     extensions=[
+                                         'markdown.extensions.extra',
+                                         'markdown.extensions.codehilite',
+                                     ])
     context = {'article': article}
     return render(request, 'article/detail.html', context)
